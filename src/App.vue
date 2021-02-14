@@ -18,9 +18,9 @@ export default {
 	name: 'App',
 	data() {
 		return {
-			count: 0,
-			totalCount: 0,
-			firebaseData: null,
+		count: 0,
+		totalCount: 0,
+		firebaseData: null,
 		}
 	},
 	components: {
@@ -49,6 +49,13 @@ export default {
 		let data = (await counterRef.get()).data();
 		this.totalCount = data.count;
 	},
+	beforeCreate() {
+		firebase.auth().signInAnonymously();
+	},
+	beforeDestroy() {
+		firebase.auth().getInstance().currentuser?.delete()
+		console.log("destroyed")
+	}
 }
 </script>
 
