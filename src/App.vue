@@ -12,7 +12,7 @@ import { debounce } from "debounce";
 
 const documentPath = "counter/counter"
 const counterRef = db.doc(documentPath);
-const waitTime = 2000;
+const waitTime = 1000;
 
 export default {
 	name: 'App',
@@ -20,15 +20,9 @@ export default {
 		return {
 		count: 0,
 		totalCount: 0,
-		firebaseData: null,
 		}
 	},
 	components: {
-	},
-	firestore() {
-		return {
-			firebaseData: db.doc(documentPath)
-		}
 	},
 	methods: {
 		increaseCounter() {
@@ -41,21 +35,27 @@ export default {
 			counterRef.update({ count: increment })
 			this.count = 0
 		},
+		async getTotalCount() {
+			let data = (await counterRef.get()).data();
+			this.totalCount = data.count;
+		},
 		debouncedUpdate: debounce(function() {
 			this.submitCounter()
 		}, waitTime)
 	},
-	created: async function() {
-		let data = (await counterRef.get()).data();
-		this.totalCount = data.count;
+	beforeCreate: async function() {
+		await firebase.auth().signInAnonymously().then(() => {
+			this.getTotalCount();
+		});
 	},
-	beforeCreate() {
-		firebase.auth().signInAnonymously();
-	},
-	beforeDestroy() {
-		firebase.auth().getInstance().currentuser?.delete()
-		console.log("destroyed")
-	}
+	// beforeDestroy() {
+	// 	var user = firebase.auth().currentUser;
+	// 	user.delete().then(() => {
+	// 		console.log("anon user deleted")
+	// 	}).catch(err => {
+	// 		console.log(err)
+	// 	})
+	// }
 }
 </script>
 
