@@ -22,10 +22,11 @@ export default {
 	name: 'App',
 	data() {
 		return {
-		count: 0,
-		totalCount: 0,
-		canvasHeight: 0,
-		canvasWidth: 0,
+			count: 0,
+			totalCount: 0,
+			lastUpdated: null,
+			canvasHeight: 0,
+			canvasWidth: 0,
 		}
 	},
 	components: {
@@ -39,12 +40,15 @@ export default {
 		},
 		submitCounter() {
 			const increment = firebase.firestore.FieldValue.increment(this.count)
-			counterRef.update({ count: increment })
+			const timestamp = firebase.firestore.Timestamp.fromDate(new Date());
+			counterRef.update({ count: increment, lastUpdated:  timestamp})
+
 			this.count = 0
 		},
-		async getTotalCount() {
+		async getData() {
 			let data = (await counterRef.get()).data();
 			this.totalCount = data.count;
+			this.lastUpdated = data.lastUpdated;
 			this.drawHearts();
 		},
 		resizeCanvas() {
@@ -93,7 +97,7 @@ export default {
 	},
 	beforeCreate: async function() {
 		await firebase.auth().signInAnonymously().then(() => {
-			this.getTotalCount();
+			this.getData();
 		});
 	},
 	beforeDestroy: function (){
