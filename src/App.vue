@@ -1,16 +1,15 @@
 <template>
 	<div id="app">
 		<canvas id="canvas" v-bind:width="canvasWidth" v-bind:height="canvasHeight"></canvas>
+		<div id="lastUpdated">
+			<p class="dateText lead"><span v-if="lastUpdated === null"></span><span v-else>Updated {{ getLastUpdated }}</span></p>
+		</div>
 		<div id="heart-block">
 			<div id="heart-counter" class="text-center">
 				<p class="heartCount lead text-center noSelect disable-dbl-tap-zoom" style="z-index: 1; word-wrap: break-word; max-width: 100px; width: 100px" v-on:click=increaseCounter><strong><span v-if="totalCount === 0"></span><span v-else>{{ getTotalCountString }}</span></strong></p>
 				<img class="heartImg noSelect disable-dbl-tap-zoom" src="@/assets/heart.svg" v-on:click=increaseCounter width="150" height="150" draggable="false"/>
 			</div>
 		</div>
-		<div id="lastUpdated">
-			<p class="dateText lead"><span v-if="lastUpdated === null"></span><span v-else>{{ getLastUpdated }}</span></p>
-		</div>
-		
 	</div>
 </template>
 
@@ -50,8 +49,8 @@ export default {
 			const increment = firebase.firestore.FieldValue.increment(this.count)
 			const timestamp = firebase.firestore.Timestamp.fromDate(new Date());
 			counterRef.update({ count: increment, lastUpdated:  timestamp})
-
 			this.count = 0
+			this.lastUpdated = Date.now();
 		},
 		async getData() {
 			let data = (await counterRef.get()).data();
@@ -127,8 +126,8 @@ export default {
 			return this.totalCount.toString().length; 
 		},
 		getLastUpdated: function () {
-			console.log(Date.now() - this.lastUpdated)
-			return timeAgo.format(Date.now() - this.lastUpdated, "round")
+			var timeDiff = Date.now() - this.lastUpdated;
+			return timeAgo.format(Date.now() - timeDiff, "round")
 		},
 	}
 }
