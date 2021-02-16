@@ -58,7 +58,6 @@ export default {
 			return Math.floor(Math.random() * multiplier)
 		},
 		drawHearts() {
-			console.log("draw hearts now!")
 			var canvas = document.getElementById("canvas");
 			var context = canvas.getContext("2d");
 			context.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
@@ -106,7 +105,6 @@ export default {
 			for (var key in shortenDict) {
 				var len = this.lengthOfCount;
 				var num = parseInt(key, 10);
-				console.log(num, len, len >= num, len < num+3)
 				if (len >= num && len < num+3) {
 					return (this.totalCount / (Math.pow(10, num-1))).toFixed(3) + shortenDict[key]
 				}
