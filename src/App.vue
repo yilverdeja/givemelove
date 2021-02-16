@@ -7,12 +7,20 @@
 				<img class="heartImg noSelect disable-dbl-tap-zoom" src="@/assets/heart.svg" v-on:click=increaseCounter width="150" height="150" draggable="false"/>
 			</div>
 		</div>
+		<div id="lastUpdated">
+			<p class="dateText lead"><span v-if="lastUpdated === null"></span><span v-else>{{ getLastUpdated }}</span></p>
+		</div>
+		
 	</div>
 </template>
 
 <script>
 import { firebase, db } from "@/firebase";
 import { debounce } from "debounce";
+import TimeAgo from 'javascript-time-ago'
+import en from 'javascript-time-ago/locale/en'
+TimeAgo.addDefaultLocale(en)
+const timeAgo = new TimeAgo('en-US')
 
 const documentPath = "counter/counter"
 const counterRef = db.doc(documentPath);
@@ -48,7 +56,7 @@ export default {
 		async getData() {
 			let data = (await counterRef.get()).data();
 			this.totalCount = data.count;
-			this.lastUpdated = data.lastUpdated;
+			this.lastUpdated = data.lastUpdated.toDate().getTime();
 			this.drawHearts();
 		},
 		resizeCanvas() {
@@ -118,6 +126,10 @@ export default {
 		lengthOfCount: function() {
 			return this.totalCount.toString().length; 
 		},
+		getLastUpdated: function () {
+			console.log(Date.now() - this.lastUpdated)
+			return timeAgo.format(Date.now() - this.lastUpdated, "round")
+		},
 	}
 }
 </script>
@@ -132,7 +144,7 @@ export default {
 		height: 100vh;
 	}
 
-	#canvas, #heart-block {
+	#canvas, #heart-block, #lastUpdated {
 		position: absolute;
 	}	
 
@@ -147,6 +159,18 @@ export default {
 
 	#heart-counter {
 		position: relative;
+	}
+
+	#lastUpdated {
+		height: 100vh;
+		width: 100vw;
+		display: flex;
+		justify-content: flex-end;
+		align-items: flex-end;
+	}
+
+	.dateText {
+		margin: 20px;
 	}
 
 	.heartCount {
