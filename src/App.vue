@@ -3,8 +3,8 @@
 		<canvas id="canvas" v-bind:width="canvasWidth" v-bind:height="canvasHeight"></canvas>
 		<div id="heart-block">
 			<div id="heart-counter" class="text-center">
-				<p class="heartCount lead text-center noSelect" style="z-index: 1; word-wrap: break-word; max-width: 100px; width: 100px" v-on:click=increaseCounter><strong><span v-if="totalCount === 0"></span><span v-else>{{ getTotalCountString }}</span></strong></p>
-				<img class="heartImg noSelect" src="@/assets/heart.svg" v-on:click=increaseCounter width="150" height="150" draggable="false"/>
+				<p class="heartCount lead text-center noSelect disable-dbl-tap-zoom" style="z-index: 1; word-wrap: break-word; max-width: 100px; width: 100px" v-on:click=increaseCounter><strong><span v-if="totalCount === 0"></span><span v-else>{{ getTotalCountString }}</span></strong></p>
+				<img class="heartImg noSelect disable-dbl-tap-zoom" src="@/assets/heart.svg" v-on:click=increaseCounter width="150" height="150" draggable="false"/>
 			</div>
 		</div>
 	</div>
@@ -174,6 +174,11 @@ export default {
 		-moz-user-select: none; /* Old versions of Firefox */
 		-ms-user-select: none; /* Internet Explorer/Edge */
 		user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+	}
+
+	/* https://stackoverflow.com/questions/10614481/disable-double-tap-zoom-option-in-browser-on-touch-devices */
+	.disable-dbl-tap-zoom {
+		touch-action: manipulation;
 	}
 
 </style>
