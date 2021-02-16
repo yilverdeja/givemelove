@@ -2,9 +2,10 @@
 	<div id="app">
 		<canvas id="canvas" v-bind:width="canvasWidth" v-bind:height="canvasHeight"></canvas>
 		<div id="heart-block">
-			<img src="@/assets/heart.svg" v-on:click=increaseCounter width="150" height="150"/>
-			<br>
-			<p class="lead text-center" style="zindex: -1; word-wrap: break-word; max-width: 120px"><strong>Worldwide Love Counter <br><span v-if="totalCount === 0"></span><span v-else>{{totalCount}}</span></strong></p>
+			<div id="heart-counter" class="text-center">
+				<img class="heartImg noSelect" src="@/assets/heart.svg" v-on:click=increaseCounter width="150" height="150" draggable="false"/>
+				<p class="heartCount lead text-center noSelect" style="word-wrap: break-word; max-width: 100px; width: 100px" v-on:click=increaseCounter><strong><span v-if="totalCount === 0"></span><span v-else>{{totalCount}}</span></strong></p>
+			</div>
 		</div>
 	</div>
 </template>
@@ -119,7 +120,7 @@ export default {
 
 	#canvas, #heart-block {
 		position: absolute;
-	}
+	}	
 
 	#heart-block {
 		height: 100vh;
@@ -130,9 +131,40 @@ export default {
 		flex-direction: column;
 	}
 
-	img:active {
+	#heart-counter {
+		position: relative;
+	}
+
+	.heartCount {
+		position: absolute;
+	}
+
+	.heartCount{
+		/* TODO: Remove hard coded magic numbers */
+		top: 55px;
+		left: 24px;
+	}
+
+	/* https://jsfiddle.net/dcwn63a2/3/ */
+	/* TODO: When heartCount clicked, give heartImg shadow */
+	.heartCount:active + .heartImg {
 		-webkit-filter: drop-shadow(2px 2px 2px #222222);
 		filter: drop-shadow(2px 2px 2px #853322);
+	}
+
+	.heartImg:active{
+		-webkit-filter: drop-shadow(2px 2px 2px #222222);
+		filter: drop-shadow(2px 2px 2px #853322);
+	}
+
+	/* https://stackoverflow.com/questions/826782/how-to-disable-text-selection-highlighting */
+	.noSelect {
+		-webkit-touch-callout: none; /* iOS Safari */
+		-webkit-user-select: none; /* Safari */
+		-khtml-user-select: none; /* Konqueror HTML */
+		-moz-user-select: none; /* Old versions of Firefox */
+		-ms-user-select: none; /* Internet Explorer/Edge */
+		user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
 	}
 
 </style>
