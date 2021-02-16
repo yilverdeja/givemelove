@@ -3,7 +3,7 @@
 		<canvas id="canvas" v-bind:width="canvasWidth" v-bind:height="canvasHeight"></canvas>
 		<div id="heart-block">
 			<div id="heart-counter" class="text-center">
-				<p class="heartCount lead text-center noSelect" style="z-index: 1; word-wrap: break-word; max-width: 100px; width: 100px" v-on:click=increaseCounter><strong><span v-if="totalCount === 0"></span><span v-else>{{totalCount}}</span></strong></p>
+				<p class="heartCount lead text-center noSelect" style="z-index: 1; word-wrap: break-word; max-width: 100px; width: 100px" v-on:click=increaseCounter><strong><span v-if="totalCount === 0"></span><span v-else>{{ getTotalCountString }}</span></strong></p>
 				<img class="heartImg noSelect" src="@/assets/heart.svg" v-on:click=increaseCounter width="150" height="150" draggable="false"/>
 			</div>
 		</div>
@@ -58,7 +58,6 @@ export default {
 			return Math.floor(Math.random() * multiplier)
 		},
 		drawHearts() {
-			console.log("draw hearts now!")
 			var canvas = document.getElementById("canvas");
 			var context = canvas.getContext("2d");
 			context.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
@@ -81,6 +80,9 @@ export default {
 			context.putImageData(id, 0, 0);
 
 		},
+		getLengthOfNum(num) {
+			return num.toString().length;
+		},
 		debouncedUpdate: debounce(function() {
 			this.submitCounter()
 		}, waitTime)
@@ -96,15 +98,23 @@ export default {
 	},
 	beforeDestroy: function (){
 		window.removeEventListener("resize", this.resizeCanvas);
+	},
+	computed: {
+		getTotalCountString: function() {
+			var shortenDict = {4: "k", 7: "M", 10: "B", 13: "T",}
+			for (var key in shortenDict) {
+				var len = this.lengthOfCount;
+				var num = parseInt(key, 10);
+				if (len >= num && len < num+3) {
+					return (this.totalCount / (Math.pow(10, num-1))).toFixed(3) + shortenDict[key]
+				}
+			}
+			return this.totalCount + ""
+		},
+		lengthOfCount: function() {
+			return this.totalCount.toString().length; 
+		},
 	}
-	// beforeDestroy() {
-	// 	var user = firebase.auth().currentUser;
-	// 	user.delete().then(() => {
-	// 		console.log("anon user deleted")
-	// 	}).catch(err => {
-	// 		console.log(err)
-	// 	})
-	// }
 }
 </script>
 
