@@ -1,6 +1,9 @@
 <template>
 	<div id="app">
 		<canvas id="canvas" v-bind:width="canvasWidth" v-bind:height="canvasHeight"></canvas>
+		<div id="lastUpdated">
+			<p class="dateText lead"><span v-if="lastUpdated === null"></span><span v-else>Updated {{ getLastUpdated }}</span></p>
+		</div>
 		<div id="heart-block">
 			<div id="heart-counter" class="text-center">
 				<p class="heartCount lead text-center noSelect disable-dbl-tap-zoom" style="z-index: 1; word-wrap: break-word; max-width: 100px; width: 100px" v-on:click=increaseCounter><strong><span v-if="totalCount === 0"></span><span v-else>{{ getTotalCountString }}</span></strong></p>
@@ -13,6 +16,10 @@
 <script>
 import { firebase, db } from "@/firebase";
 import { debounce } from "debounce";
+import TimeAgo from 'javascript-time-ago'
+import en from 'javascript-time-ago/locale/en'
+TimeAgo.addDefaultLocale(en)
+const timeAgo = new TimeAgo('en-US')
 
 const documentPath = "counter/counter"
 const counterRef = db.doc(documentPath);
@@ -22,10 +29,11 @@ export default {
 	name: 'App',
 	data() {
 		return {
-		count: 0,
-		totalCount: 0,
-		canvasHeight: 0,
-		canvasWidth: 0,
+			count: 0,
+			totalCount: 0,
+			lastUpdated: null,
+			canvasHeight: 0,
+			canvasWidth: 0,
 		}
 	},
 	components: {
@@ -39,12 +47,15 @@ export default {
 		},
 		submitCounter() {
 			const increment = firebase.firestore.FieldValue.increment(this.count)
-			counterRef.update({ count: increment })
+			const timestamp = firebase.firestore.Timestamp.fromDate(new Date());
+			counterRef.update({ count: increment, lastUpdated:  timestamp})
 			this.count = 0
+			this.lastUpdated = Date.now();
 		},
-		async getTotalCount() {
+		async getData() {
 			let data = (await counterRef.get()).data();
 			this.totalCount = data.count;
+			this.lastUpdated = data.lastUpdated.toDate().getTime();
 			this.drawHearts();
 		},
 		resizeCanvas() {
@@ -93,7 +104,7 @@ export default {
 	},
 	beforeCreate: async function() {
 		await firebase.auth().signInAnonymously().then(() => {
-			this.getTotalCount();
+			this.getData();
 		});
 	},
 	beforeDestroy: function (){
@@ -114,6 +125,10 @@ export default {
 		lengthOfCount: function() {
 			return this.totalCount.toString().length; 
 		},
+		getLastUpdated: function () {
+			var timeDiff = Date.now() - this.lastUpdated;
+			return timeAgo.format(Date.now() - timeDiff, "round")
+		},
 	}
 }
 </script>
@@ -128,7 +143,7 @@ export default {
 		height: 100vh;
 	}
 
-	#canvas, #heart-block {
+	#canvas, #heart-block, #lastUpdated {
 		position: absolute;
 	}	
 
@@ -143,6 +158,18 @@ export default {
 
 	#heart-counter {
 		position: relative;
+	}
+
+	#lastUpdated {
+		height: 100vh;
+		width: 100vw;
+		display: flex;
+		justify-content: flex-end;
+		align-items: flex-end;
+	}
+
+	.dateText {
+		margin: 20px;
 	}
 
 	.heartCount {
