@@ -1,6 +1,6 @@
 <template>
 	<div id="app">
-		<canvas id="canvas"></canvas>
+		<canvas id="canvas" v-bind:width="canvasWidth" v-bind:height="canvasHeight"></canvas>
 		<div id="heart-block">
 			<img src="@/assets/heart.svg" v-on:click=increaseCounter width="150" height="150"/>
 			<br>
@@ -23,6 +23,8 @@ export default {
 		return {
 		count: 0,
 		totalCount: 0,
+		canvasHeight: 0,
+		canvasWidth: 0,
 		}
 	},
 	components: {
@@ -42,15 +44,40 @@ export default {
 			let data = (await counterRef.get()).data();
 			this.totalCount = data.count;
 		},
+		resizeCanvas() {
+			this.canvasHeight = window.innerHeight;
+			this.canvasWidth = window.innerWidth;
+			this.$nextTick(() => {
+				this.drawHearts();
+			})
+		},
+		drawHearts() {
+			console.log("draw hearts now!")
+		},
 		debouncedUpdate: debounce(function() {
 			this.submitCounter()
 		}, waitTime)
+	},
+	mounted() {
+		window.addEventListener("resize", this.resizeCanvas)
+		this.resizeCanvas();
 	},
 	beforeCreate: async function() {
 		await firebase.auth().signInAnonymously().then(() => {
 			this.getTotalCount();
 		});
 	},
+	computed: {
+		resizeCanvasHeight() {
+			return window.innerHeight;
+		},
+		resizeCanvasWidth() {
+			return window.innerWidth;
+		},
+	},
+	beforeDestroy: function (){
+		window.removeEventListener("resize", this.resizeCanvas);
+	}
 	// beforeDestroy() {
 	// 	var user = firebase.auth().currentUser;
 	// 	user.delete().then(() => {
