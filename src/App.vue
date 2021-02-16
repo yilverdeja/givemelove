@@ -33,6 +33,7 @@ export default {
 		increaseCounter() {
 			this.count = this.count + 1
 			this.totalCount = this.totalCount + 1
+			this.drawHearts();
 			this.debouncedUpdate();
 		},
 		submitCounter() {
@@ -43,6 +44,7 @@ export default {
 		async getTotalCount() {
 			let data = (await counterRef.get()).data();
 			this.totalCount = data.count;
+			this.drawHearts();
 		},
 		resizeCanvas() {
 			this.canvasHeight = window.innerHeight;
@@ -51,8 +53,32 @@ export default {
 				this.drawHearts();
 			})
 		},
+		getRandom(multiplier) {
+			return Math.floor(Math.random() * multiplier)
+		},
 		drawHearts() {
 			console.log("draw hearts now!")
+			var canvas = document.getElementById("canvas");
+			var context = canvas.getContext("2d");
+			context.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+			var id = context.getImageData(0, 0, this.canvasWidth, this.canvasHeight)
+			var pixels = id.data;
+
+			for (var i = 0; i < this.totalCount; i++) {
+				var x = this.getRandom(this.canvasWidth);
+				var y = this.getRandom(this.canvasHeight);
+				var r = this.getRandom(256);
+				var g = this.getRandom(256);
+				var b = this.getRandom(256);
+				var offset = (y * id.width + x) * 4;
+				pixels[offset] = r;
+				pixels[offset + 1] = g;
+				pixels[offset + 2] = b;
+				pixels[offset + 3] = 255;
+			}
+
+			context.putImageData(id, 0, 0);
+
 		},
 		debouncedUpdate: debounce(function() {
 			this.submitCounter()
@@ -66,14 +92,6 @@ export default {
 		await firebase.auth().signInAnonymously().then(() => {
 			this.getTotalCount();
 		});
-	},
-	computed: {
-		resizeCanvasHeight() {
-			return window.innerHeight;
-		},
-		resizeCanvasWidth() {
-			return window.innerWidth;
-		},
 	},
 	beforeDestroy: function (){
 		window.removeEventListener("resize", this.resizeCanvas);
