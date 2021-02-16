@@ -1,8 +1,11 @@
 <template>
 	<div id="app">
-		<img src="@/assets/heart.svg" v-on:click=increaseCounter width="150" height="150"/>
-		<br>
-		<p class="lead text-center" style="zindex: -1; word-wrap: break-word; max-width: 120px"><strong>Worldwide Love Counter <br><span v-if="totalCount === 0"></span><span v-else>{{totalCount}}</span></strong></p>
+		<canvas id="canvas"></canvas>
+		<div id="heart-block">
+			<img src="@/assets/heart.svg" v-on:click=increaseCounter width="150" height="150"/>
+			<br>
+			<p class="lead text-center" style="zindex: -1; word-wrap: break-word; max-width: 120px"><strong>Worldwide Love Counter <br><span v-if="totalCount === 0"></span><span v-else>{{totalCount}}</span></strong></p>
+		</div>
 	</div>
 </template>
 
@@ -65,7 +68,17 @@ export default {
 	}
 	#app {
 		background-color: #fad1cf;
+		position: relative;
 		height: 100vh;
+	}
+
+	#canvas, #heart-block {
+		position: absolute;
+	}
+
+	#heart-block {
+		height: 100vh;
+		width: 100vw;
 		display: flex;
 		justify-content: center;
 		align-items: center;
