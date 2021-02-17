@@ -2,7 +2,10 @@
 	<div id="app">
 		<canvas id="canvas" v-bind:width="canvasWidth" v-bind:height="canvasHeight"></canvas>
 		<div id="lastUpdated">
-			<p class="dateText lead"><span v-if="lastUpdated === null"></span><span v-else>Updated {{ getLastUpdated }}</span></p>
+			<div id="textBlock">
+				<p class="lead"><span v-if="lastUpdated === null"></span><span v-else>Updated {{ getLastUpdated }}</span></p>
+				<p class="small">givemelove © <span>{{ copyrightYear }}</span>, Designed by <a href="https://yve.life" target="_blank">yve.</a></p>
+			</div>
 		</div>
 		<div id="heart-block">
 			<div id="heart-counter" class="text-center">
@@ -129,6 +132,9 @@ export default {
 			var timeDiff = Date.now() - this.lastUpdated;
 			return timeAgo.format(Date.now() - timeDiff, "round")
 		},
+		copyrightYear: function() {
+			return new Date().getFullYear();
+		}
 	}
 }
 </script>
@@ -166,6 +172,12 @@ export default {
 		display: flex;
 		justify-content: flex-end;
 		align-items: flex-end;
+		flex-direction: column;
+	}
+
+	#textBlock {
+		text-align: right;
+		margin-right: 15px;
 	}
 
 	.dateText {
