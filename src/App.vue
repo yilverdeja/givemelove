@@ -11,6 +11,7 @@
 			<div class="container-fluid">
 				<div class="row">
 					<div class="col">
+						<ToggleSwitch />
 					</div>
 				</div>
 			</div>
@@ -31,6 +32,7 @@
 </template>
 
 <script>
+import ToggleSwitch from "@/components/ToggleSwitch.vue"
 import { firebase, db } from "@/firebase";
 import { debounce } from "debounce";
 import TimeAgo from 'javascript-time-ago'
@@ -44,6 +46,9 @@ const waitTime = 1000;
 
 export default {
 	name: 'App',
+	components: {
+		ToggleSwitch,
+	},
 	data() {
 		return {
 			count: 0,
@@ -52,8 +57,6 @@ export default {
 			canvasHeight: 0,
 			canvasWidth: 0,
 		}
-	},
-	components: {
 	},
 	methods: {
 		increaseCounter() {
