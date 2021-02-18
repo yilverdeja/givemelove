@@ -1,16 +1,22 @@
 <template>
 	<div id="app">
 		<canvas id="canvas" v-bind:width="canvasWidth" v-bind:height="canvasHeight"></canvas>
-		<div id="lastUpdated">
-			<div id="textBlock">
-				<p class="lead"><span v-if="lastUpdated === null"></span><span v-else>Updated {{ getLastUpdated }}</span></p>
-				<p class="small">givemelove © <span>{{ copyrightYear }}</span>, Designed by <a href="https://yve.life" target="_blank">yve.</a></p>
-			</div>
-		</div>
 		<div id="heart-block">
 			<div id="heart-counter" class="text-center">
 				<p class="heartCount lead text-center noSelect disable-dbl-tap-zoom" style="z-index: 1; word-wrap: break-word; max-width: 100px; width: 100px" v-on:click=increaseCounter><strong><span v-if="totalCount === 0"></span><span v-else>{{ getTotalCountString }}</span></strong></p>
 				<img class="heartImg noSelect disable-dbl-tap-zoom" src="@/assets/heart.svg" v-on:click=increaseCounter width="150" height="150" draggable="false"/>
+			</div>
+		</div>
+		<div id="footer">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="footer-col col-12 col-sm-6 order-3 order-sm-1">
+						<p class="small">givemelove © <span>{{ copyrightYear }}</span>, Designed by <a href="https://yve.life" target="_blank">yve.</a></p>
+					</div>
+					<div class="footer-col col-12 col-sm-6 order-2">
+						<p class="lead"><span v-if="lastUpdated === null"></span><span v-else>Updated {{ getLastUpdated }}</span></p>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -166,18 +172,23 @@ export default {
 		position: relative;
 	}
 
-	#lastUpdated {
-		height: 100vh;
-		width: 100vw;
-		display: flex;
-		justify-content: flex-end;
-		align-items: flex-end;
-		flex-direction: column;
-	}
-
 	#textBlock {
 		text-align: right;
 		margin-right: 15px;
+	}
+
+	#footer {
+		position: fixed;
+		left: 0;
+		bottom: 0;
+		width: 100vw;
+		padding: 0 10px;
+	}
+
+	.footer-col {
+		display: flex;
+		justify-content: center;
+		align-items: center;
 	}
 
 	.dateText {
