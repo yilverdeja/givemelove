@@ -1,6 +1,7 @@
 import firebase from "firebase/app";
 import "firebase/firestore";
 import "firebase/auth"
+import "firebase/analytics"
 
 const firebaseApp = firebase.initializeApp({
     apiKey: "AIzaSyDCSymC60Ee0MIl0mDvO7eLyi3yQFknAuY",
@@ -12,7 +13,8 @@ const firebaseApp = firebase.initializeApp({
     measurementId: "G-P4WZBWWNPQ"
   });
 
+const analytics = firebaseApp.analytics();
 const db = firebaseApp.firestore();
 
 // export the database for components to use
-export { firebase, db };
+export { firebase, db, analytics };
