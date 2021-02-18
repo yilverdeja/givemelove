@@ -7,6 +7,14 @@
 				<img class="heartImg noSelect disable-dbl-tap-zoom" src="@/assets/heart.svg" v-on:click=increaseCounter width="150" height="150" draggable="false"/>
 			</div>
 		</div>
+		<div id="nav-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col">
+					</div>
+				</div>
+			</div>
+		</div>
 		<div id="footer">
 			<div class="container-fluid">
 				<div class="row">
@@ -183,6 +191,13 @@ export default {
 		bottom: 0;
 		width: 100vw;
 		padding: 0 10px;
+	}
+
+	#nav-header {
+		position: fixed;
+		left: 0;
+		top: 0;
+		width: 100vw;
 	}
 
 	.footer-col {
