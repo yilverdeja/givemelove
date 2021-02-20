@@ -7,15 +7,20 @@
 				<img class="heartImg noSelect disable-dbl-tap-zoom" src="@/assets/heart.svg" v-on:click=increaseCounter width="150" height="150" draggable="false"/>
 			</div>
 		</div>
-		<div id="nav-header" style="margin: 10px 0px" v-if="dataRetrieved">
+		<div id="nav-header" style="margin: 10px 0px; padding: 0px 20px" v-if="dataRetrieved">
 			<div class="container">
 				<div class="row">
 					<div class="col-8">
 					</div>
 					<div class="col-2"></div>
-					<div class="col-2 text-center">
+					<div class="col-1 text-center">
 						<b-button @click=swapMode id="b-mode" size="sm" :variant=modeType class="mb-2" style="background-color: rgb(255, 255, 255, 0); border-color: white" pill>
 							<b-icon id="b-icon" :icon=modeIcon></b-icon>
+						</b-button>
+					</div>
+					<div class="col-1 text-center">
+						<b-button @click=openUserScreen size="sm" id="b-user" :variant=modeType class="mb-2" style="background-color: rgb(255, 255, 255, 0); border-color: white" pill>
+							<b-icon id="b-icon" icon="person"></b-icon>
 						</b-button>
 					</div>
 				</div>
@@ -132,6 +137,11 @@ export default {
 			document.body.classList.toggle("dark-theme")
 			this.drawHearts();
         },
+		openUserScreen() {
+			// open on the right side of screen for computers (md) and push content to the left
+			// open overlayed on the screen for tablets and phones (sm, xs)
+			// use vue-screen: https://www.npmjs.com/package/vue-screen
+		},
 		debouncedUpdate: debounce(function() {
 			this.submitCounter()
 		}, waitTime)
