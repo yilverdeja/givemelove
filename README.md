@@ -1,4 +1,5 @@
-# vue-givemelove
+# Givemelove
+A valentines-inspired clicker web app where single people all over the world give each other some love by a heart on a screen.
 
 ## Project setup
 ```
